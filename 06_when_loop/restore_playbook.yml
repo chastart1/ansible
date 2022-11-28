@@ -1,0 +1,18 @@
+---
+- name: "복구작업 수행"
+  hosts: all
+  vars:
+    mariadb_packages:
+      - mariadb-server
+      - python3-PyMySQL
+  tasks:
+    - name: "패키지 삭제하기 mariadb-server, python-PyMySQL"
+      yum:
+        name: "{{ item }}"
+        state: absent
+
+      loop: "{{ mariadb_packages }}"
+      when: (ansible_distribution == 'CentOS') or (ansible_distribution =='Redhat')
+      
+
+    

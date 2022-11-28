@@ -1,0 +1,18 @@
+---
+- name: Configure /etc/motd
+  hosts: all
+  gather_facts: yes
+  vars:
+    - system_owner: webmaster@example.com
+  tasks:
+    - name: Configure /etc/motd to all hosts
+      template:
+        src: template/motd.j2
+        dest: /etc/motd
+        group: root
+        owner: root
+        mode: '0644'
+
+        
+      
+        

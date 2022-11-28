@@ -1,0 +1,22 @@
+---
+- name: restore
+  hosts: webservers
+  gather_facts: no
+  tasks:
+    - name: firewalld no service
+      firewalld:
+        service: "{{ item }}"
+        permanent: no
+        state: disabled
+      loop:
+        - http
+        - https
+    - name: delete file
+      file:
+        path: "/var/www/html/index.html"
+        state: absent
+
+    - name: delete service
+      yum:
+        name: httpd
+        state: absent

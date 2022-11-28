@@ -1,0 +1,37 @@
+---
+- name: "playbook.yml 되돌리기"
+  hosts: webservers
+  vars_files:
+  - vars/vars.yml
+  tasks:
+  - name: "방화벽 등록 해제"
+    ansible.builtin.firewalld:
+      service: "{{ item }}"
+      permanent: no
+      state: disabled
+      immediate: no
+    
+    loop:
+      - "{{ fw_http }}"
+      - "{{ fw_https }}"
+  - name: "서비스 중지 httpd.service"
+    ansible.builtin.service:
+      name: "{{ svc_web }}"
+      state: stopped
+      enabled: no
+
+  - name: "파일 삭제"
+    ansible.builtin.file:
+      path: "{{ dir_base }}/{{ file_web_src }}"
+      state: absent
+
+  - name: "패키지 삭제"
+    yum:
+      name: "{{ item }}"
+      state: absent
+    loop:
+    - "{{ pkg_web }}"
+    - "{{ pkg_web_mod }}"
+    
+
+      

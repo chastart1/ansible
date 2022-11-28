@@ -1,0 +1,16 @@
+---
+- name: Task Failure Excercise
+  hosts: databases
+  gather_facts: no
+  vars:
+    web_package: httpd
+    db_package: mariadb-server
+
+  tasks:
+  - name: "파일 삭제"
+    yum:
+      name: "{{ item }}"
+      state: absent
+    loop:
+      - "{{ web_package }}"
+      - "{{ db_package }}"

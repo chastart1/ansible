@@ -1,0 +1,13 @@
+---
+- name: Restore Time Synchronization 
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: set timezon Asia/Seoul
+      timezone:
+        name: 'Asia/Seoul'
+
+    - name: Restart the NTP service
+      service:
+        name: chronyd
+        state: restarted

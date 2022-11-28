@@ -1,0 +1,33 @@
+---
+- name: Playbook Job Control
+  hosts: webservers
+  vars_files: vars.yml
+  tasks:
+    - name: remote the files
+      file:
+        path: "{{ item.dest }}"
+        state: absent
+      loop: "{{ web_config_files }}"
+
+    - name: stop/disable the services
+      service:
+        name: httpd
+        state: stopped
+        enabled: no
+      ignore_errors: yes
+      
+
+    - name: remove the packages
+      yum:
+        name: "{{ packages }}"
+        state: absent
+
+    - name: firewalld
+      firewalld:
+        service: "{{ item }}"
+        permanent: no
+        immediate: no
+        state: disable
+      loop:
+        - http 
+        - https

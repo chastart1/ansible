@@ -1,0 +1,14 @@
+---
+- name: Restore MariaDB server 
+  hosts: databases
+  gather_facts: no
+  vars:
+    db_packages:
+      - mariadb-server
+      - python3-PyMySQL
+  tasks:
+    - name: Remove the packges 
+      yum: 
+        name: "{{ item }}"
+        state: present
+      loop: "{{ db_packages }}"

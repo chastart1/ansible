@@ -1,0 +1,65 @@
+---
+- name: "고급 웹서버 복구"
+  hosts: ansible4
+  gather_facts: no
+  vars_files: 
+    - varfiles/vars.yml
+    
+  tasks:
+    - name: "방화벽 내리기"
+      firewalld:
+        service: "{{ item }}"
+        state: disabled
+        permanent: yes
+        
+
+      loop:
+        - "{{ fw_http }}"
+        - "{{ fw_https }}"
+
+    - name: "서비스 중지"
+      service:
+        name: "{{ item }}"
+        state: stopped
+
+      loop:
+        - "{{ svc_web }}"
+        - "{{ svc_fw }}"
+
+        
+
+    - name: "파일 삭제"
+      file:
+        path: "/var/www/html/{{ src_web }}"
+        state: absent
+
+    - name: "파일 삭제 추가"
+      file:
+        path: "/etc/httpd/secrets/{{ cert_idpass_htpasswd }}"
+        state: absent
+
+    - name: "폴더 삭제"
+      file: 
+        path: "/var/www/html/secrets"
+        state: absent
+
+    - name: "파일 삭제 추가"
+      file:
+        path: "/etc/httpd/conf{{ conf_httpd }}"
+        state: absent
+
+    - name: "파일 삭제 추가"
+      file:
+        path: "/var/www/html/{{ cert_conf_httpaccess }}"
+        state: absent
+      
+
+    - name: "패키지 삭제"
+      yum:
+        name:
+          - "{{ pkg_http }}"
+          - "{{ pkg_https }}"
+          - "{{ pkg_fw }}"
+        state: absent
+
+

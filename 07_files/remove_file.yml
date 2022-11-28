@@ -1,0 +1,8 @@
+---
+- name: "Remove the users.txt"
+  hosts: all
+  tasks:
+    - name: "Remove file"
+      file:
+        path: /home/devops/users.txt
+        state: absent
